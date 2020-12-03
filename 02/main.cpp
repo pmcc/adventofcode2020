@@ -25,30 +25,60 @@ int main(int argc, char** argv)
         entries.emplace_back(line);
     }
 
-    int valid_passwords = 0;
-
     // Assuming input is well formatted :D
 
-    for (const std::string& entry : entries)
+    // Part 1
+
     {
-        std::string::size_type delimiter_pos = entry.find(": ");
-        std::size_t range_pos = std::string::npos;
+        int valid_passwords = 0;
 
-        int min = std::stoi(entry, &range_pos);
-        int max  = std::atoi(entry.c_str() + range_pos + 1);
-        char character = entry[delimiter_pos - 1];
-
-        std::string password = entry.substr(delimiter_pos + 2);
-
-        int result = std::count(password.begin(), password.end(), character);
-
-        if (result >= min && result <= max)
+        for (const std::string &entry : entries)
         {
-            ++valid_passwords;
+            std::string::size_type delimiter_pos = entry.find(": ");
+            std::size_t range_pos = std::string::npos;
+
+            int min = std::stoi(entry, &range_pos);
+            int max = std::atoi(entry.c_str() + range_pos + 1);
+            char character = entry[delimiter_pos - 1];
+
+            std::string password = entry.substr(delimiter_pos + 2);
+
+            int result = std::count(password.begin(), password.end(), character);
+
+            if (result >= min && result <= max)
+            {
+                ++valid_passwords;
+            }
         }
+
+        std::cout << valid_passwords << std::endl;
     }
 
-    std::cout << valid_passwords << std::endl;
+    // Part 2
+
+    {
+        int valid_passwords = 0;
+
+        for (const std::string &entry : entries)
+        {
+            std::string::size_type delimiter_pos = entry.find(": ");
+            std::size_t range_pos = std::string::npos;
+
+            int min = std::stoi(entry, &range_pos);
+            int max = std::atoi(entry.c_str() + range_pos + 1);
+            char character = entry[delimiter_pos - 1];
+
+            std::string password = entry.substr(delimiter_pos + 2);
+
+            int valid = (password[min - 1] == character) + (password[max - 1] == character);
+            if (valid == 1)
+            {
+                ++valid_passwords;
+            }
+        }
+
+        std::cout << valid_passwords << std::endl;
+    }
 
     return 0;
 }
