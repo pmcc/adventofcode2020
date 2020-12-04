@@ -6,7 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_subdirectory(01)
-add_subdirectory(02)
-add_subdirectory(03)
-add_subdirectory(04)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+
+include(aoc)
+
+add_subdirectory(external)
+add_subdirectory(src)

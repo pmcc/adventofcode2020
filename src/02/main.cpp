@@ -1,17 +1,12 @@
 #include <fstream>
 #include <vector>
-#include <iostream>
 #include <algorithm>
 #include <string>
+#include <fmt/printf.h>
 
 int main(int argc, char** argv)
 {
-    if (argc < 2)
-    {
-        return 0;
-    }
-
-    std::ifstream input(argv[1]);
+    std::ifstream input("input.txt");
 
     if (!input.is_open())
     {
@@ -51,7 +46,7 @@ int main(int argc, char** argv)
             }
         }
 
-        std::cout << valid_passwords << std::endl;
+        fmt::print("{}\n", valid_passwords);
     }
 
     // Part 2
@@ -77,7 +72,7 @@ int main(int argc, char** argv)
             }
         }
 
-        std::cout << valid_passwords << std::endl;
+        fmt::print("{}\n", valid_passwords);
     }
 
     return 0;

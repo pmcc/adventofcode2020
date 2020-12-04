@@ -1,17 +1,12 @@
 #include <fstream>
 #include <vector>
-#include <iostream>
 #include <string>
 #include <functional>
+#include <fmt/printf.h>
 
 int main(int argc, char** argv)
 {
-    if (argc < 2)
-    {
-        return 0;
-    }
-
-    std::ifstream input(argv[1]);
+    std::ifstream input("input.txt");
 
     if (!input.is_open())
     {
@@ -41,7 +36,7 @@ int main(int argc, char** argv)
 
     // Part 1
     {
-        constexpr auto required_fields =
+        const auto required_fields =
             {
                 "byr",
                 "iyr",
@@ -65,10 +60,10 @@ int main(int argc, char** argv)
                 }
             }
 
-            valid_passports += (fields == std::size(required_fields));
+            valid_passports += (fields == required_fields.size());
         }
 
-        std::cout << valid_passports << std::endl;
+        fmt::print("{}\n", valid_passports);
     }
 
     // Part 2
@@ -127,7 +122,7 @@ int main(int argc, char** argv)
 
         auto ecl_validation = [](std::string data)
         {
-            constexpr auto colors = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
+            const auto colors = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
             for (const auto& color : colors)
             {
                 if (data.find(color) != std::string::npos)
@@ -182,10 +177,10 @@ int main(int argc, char** argv)
                 }
             }
 
-            valid_passports += (fields == std::size(required_fields));
+            valid_passports += (fields == sizeof(required_fields) / sizeof(required_fields[0]));
         }
 
-        std::cout << valid_passports << std::endl;
+        fmt::print("{}\n", valid_passports);
     }
 
     return 0;

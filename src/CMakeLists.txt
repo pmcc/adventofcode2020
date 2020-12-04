@@ -1,0 +1,24 @@
+add_day(FOLDER 01
+	SOURCES main.cpp
+	INCLUDES
+	LIBRARIES
+)
+
+add_day(FOLDER 02
+	SOURCES main.cpp
+	INCLUDES
+	LIBRARIES
+)
+
+add_day(FOLDER 03
+	SOURCES main.cpp
+	INCLUDES
+	LIBRARIES
+)
+
+add_day(FOLDER 04
+	SOURCES main.cpp
+	INCLUDES
+	LIBRARIES
+)
+

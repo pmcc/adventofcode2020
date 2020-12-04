@@ -1,16 +1,11 @@
 #include <fstream>
 #include <vector>
-#include <iostream>
 #include <string>
+#include <fmt/printf.h>
 
 int main(int argc, char** argv)
 {
-    if (argc < 2)
-    {
-        return 0;
-    }
-
-    std::ifstream input(argv[1]);
+    std::ifstream input("input.txt");
 
     if (!input.is_open())
     {
@@ -45,7 +40,7 @@ int main(int argc, char** argv)
         return happy_little_trees;
     };
 
-    std::cout << get_trees_on_slope(3, 1) << std::endl;
+    fmt::print("{}\n", get_trees_on_slope(3, 1));
 
     // Part 2
 
@@ -55,7 +50,7 @@ int main(int argc, char** argv)
         * get_trees_on_slope(7, 1)
         * get_trees_on_slope(1, 2);
 
-    std::cout << result << std::endl;
+    fmt::print("{}\n", result);
 
     return 0;
 }

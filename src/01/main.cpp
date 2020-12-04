@@ -1,24 +1,19 @@
 #include <fstream>
 #include <set>
-#include <iostream>
 #include <algorithm>
 #include <string>
+#include <fmt/printf.h>
 
 int main(int argc, char** argv)
 {
-    if (argc < 2)
-    {
-        return 0;
-    }
-
-    std::ifstream input(argv[1]);
-    std::set<int> numbers;
+    std::ifstream input("input.txt");
 
     if (!input.is_open())
     {
         return 0;
     }
 
+    std::set<int> numbers;
     for (std::string line; std::getline(input, line);)
     {
         numbers.emplace(std::stoi(line));
@@ -41,8 +36,7 @@ int main(int argc, char** argv)
 
         if (found != numbers.end())
         {
-            int result = *found * current;
-            std::cout << result << std::endl;
+            fmt::print("{}\n", *found * current);
         }
     }
 
@@ -58,8 +52,7 @@ int main(int argc, char** argv)
             {
                 if (first_number + second_number + third_number == 2020)
                 {
-                    int result = first_number * second_number * third_number;
-                    std::cout << result << std::endl;
+                    fmt::print("{}\n", first_number * second_number * third_number);
                     return true;
                 }
 
