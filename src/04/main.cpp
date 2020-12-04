@@ -3,6 +3,16 @@
 #include <string>
 #include <functional>
 #include <fmt/printf.h>
+#include <ctre.hpp>
+#include <string_view>
+
+// Part 2
+
+template <typename... Fs>
+bool is_passport_valid(std::string_view view, Fs&&... validators)
+{
+    return (validators(view) && ...);
+}
 
 int main(int argc, char** argv)
 {
@@ -36,16 +46,16 @@ int main(int argc, char** argv)
 
     // Part 1
     {
-        const auto required_fields =
-            {
-                "byr",
-                "iyr",
-                "eyr",
-                "hgt",
-                "hcl",
-                "ecl",
-                "pid",
-            };
+        const auto required_fields = 
+        {
+            "byr:",
+            "iyr:",
+            "eyr:",
+            "hgt:",
+            "hcl:",
+            "ecl:",
+            "pid:",
+        };
 
         int valid_passports = 0;
 
@@ -68,116 +78,88 @@ int main(int argc, char** argv)
 
     // Part 2
     {
-        auto byr_validation = [](const std::string& data)
+        auto byr = [](std::string_view view)
         {
-            int year = std::stoi(data);
-            return year >= 1920 && year <= 2002;
-        };
-
-        auto iyr_validation = [](const std::string& data)
-        {
-            int year = std::stoi(data);
-            return year >= 2010 && year <= 2020;
-        };
-
-        auto eyr_validation = [](const std::string& data)
-        {
-            int year = std::stoi(data);
-            return year >= 2020 && year <= 2030;
-        };
-
-        auto hgt_validation = [](const std::string& data)
-        {
-            int height = std::stoi(data);
-            if (data.find("cm") != std::string::npos)
+            static constexpr auto pattern = ctll::fixed_string{"byr:(\\d{4})\\s"};
+            if (auto result = ctre::search<pattern>(view))
             {
-                return height >= 150 && height <= 193;
-            }
-            else if (data.find("in") != std::string::npos)
-            {
-                return height >= 59 && height <= 76;
+                int year = std::stoi(result.get<1>().to_string());
+                return year >= 1920 && year <= 2002;
             }
 
             return false;
         };
 
-        auto hcl_validation = [](const std::string& data)
+        auto iyr = [](std::string_view view)
         {
-            if (data.size() < 7 || data[0] != '#')
+            static constexpr auto pattern = ctll::fixed_string{"iyr:(\\d{4})\\s"};
+            if (auto result = ctre::search<pattern>(view))
             {
-                return false;
+                int year = std::stoi(result.get<1>().to_string());
+                return year >= 2010 && year <= 2020;
             }
 
-            for (int i = 1; i < 7; ++i)
-            {
-                char c = data[i];
-                if ((c < '0' || c > '9') && (c < 'a' || c > 'f'))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return false;
         };
 
-        auto ecl_validation = [](std::string data)
+        auto eyr = [](std::string_view view)
         {
-            const auto colors = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
-            for (const auto& color : colors)
+            static constexpr auto pattern = ctll::fixed_string{"eyr:(\\d{4})\\s"};
+            if (auto result = ctre::search<pattern>(view))
             {
-                if (data.find(color) != std::string::npos)
+                int year = std::stoi(result.get<1>().to_string());
+                return year >= 2020 && year <= 2030;
+            }
+
+            return false;
+        };
+
+        auto hgt = [](std::string_view view)
+        {
+            static constexpr auto pattern = ctll::fixed_string{"hgt:(\\d{2,3})(cm|in)\\s"};
+            if (auto result = ctre::search<pattern>(view))
+            {
+                int height = std::stoi(result.get<1>().to_string());
+                auto metric = result.get<2>().to_view();
+                if (metric == "cm")
                 {
-                    return true;
+                    return height >= 150 && height <= 193;
+                }
+                else if (metric == "in")
+                {
+                    return height >= 59 && height <= 76;
                 }
             }
 
             return false;
         };
 
-        auto pid_validation = [](const std::string& data)
+        auto hcl = [](std::string_view view)
         {
-            int valid = 0;
-            auto start = data.begin();
-            while (start != data.end() && *start >= '0' && *start <= '9')
-            {
-                ++valid;
-                ++start;
-            }
-
-            return valid == 9;
+            static constexpr auto pattern = ctll::fixed_string{"hcl:#(\\d|[a-f]){6}\\s"};
+            return ctre::search<pattern>(view);
         };
 
-        struct field
+        auto ecl = [](std::string_view view)
         {
-            std::string m_label;
-            std::function<bool(const std::string&)> m_is_valid;
+            static constexpr auto pattern = ctll::fixed_string{"ecl:(amb|blu|brn|gry|grn|hzl|oth)\\s"};
+            return ctre::search<pattern>(view);
         };
 
-        const field required_fields[] =
-            {
-                { "byr:", byr_validation },
-                { "iyr:", iyr_validation },
-                { "eyr:", eyr_validation },
-                { "hgt:", hgt_validation },
-                { "hcl:", hcl_validation },
-                { "ecl:", ecl_validation },
-                { "pid:", pid_validation },
-            };
+        auto pid = [](std::string_view view)
+        {
+            static constexpr auto pattern = ctll::fixed_string{"pid:(\\d{9})\\s"};
+            return ctre::search<pattern>(view);
+        };
 
         int valid_passports = 0;
 
         for (const std::string &passport : passports)
         {
-            int fields = 0;
-            for (const auto &field : required_fields)
-            {
-                if (std::string::size_type offset = passport.find(field.m_label); offset != std::string::npos)
-                {
-                    fields += field.m_is_valid(passport.substr(offset + 4));
-                }
-            }
-
-            valid_passports += (fields == sizeof(required_fields) / sizeof(required_fields[0]));
+            valid_passports += is_passport_valid(
+                passport,
+                byr, iyr, eyr, hgt, hcl, ecl, pid
+            );
         }
 
         fmt::print("{}\n", valid_passports);

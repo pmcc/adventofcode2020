@@ -19,6 +19,6 @@ add_day(FOLDER 03
 add_day(FOLDER 04
 	SOURCES main.cpp
 	INCLUDES
-	LIBRARIES
+	LIBRARIES ctre
 )
 
