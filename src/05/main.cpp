@@ -3,6 +3,8 @@
 #include <string>
 #include <fmt/printf.h>
 #include <numeric>
+#include <ranges>
+#include <set>
 
 int main(int argc, char** argv)
 {
@@ -15,7 +17,7 @@ int main(int argc, char** argv)
 
     // Part 1
 
-    constexpr auto get_boarding_pass_id = [](std::string_view view)
+    constexpr auto to_boarding_pass_id = [](std::string_view view)
     {
         int id = 0b1111111111;
 
@@ -34,28 +36,22 @@ int main(int argc, char** argv)
         return id;
     };
 
+    // Input stream is consumed so we copy the range to a vector in order to re-use the data
     std::vector<int> boarding_passes;
-    for (std::string line; std::getline(input, line); )
-    {
-        boarding_passes.emplace_back(get_boarding_pass_id(line));
-    }
+    std::ranges::copy(std::ranges::istream_view<std::string>(input) | std::views::transform(to_boarding_pass_id), std::back_inserter(boarding_passes));
 
-    std::sort(boarding_passes.begin(), boarding_passes.end());
+    // Part 1
 
-    fmt::print("{}\n", boarding_passes.back());
+    fmt::print("{}\n", std::ranges::max(boarding_passes));
 
     // Part 2
 
-    // Generate all ids between min & max
-    std::vector<int> range(boarding_passes.back() - boarding_passes.front() + 1);
-    std::iota(range.begin(), range.end(), boarding_passes.front());
+    std::ranges::sort(boarding_passes);
+    auto [min, max] = std::ranges::minmax(boarding_passes);
 
-    // Get the missing id
-    int range_sum = std::accumulate(range.begin(), range.end(), 0);
-    int sum = std::accumulate(boarding_passes.begin(), boarding_passes.end(), 0);
-    int my_id = range_sum - sum;
-
-    fmt::print("{}\n", my_id);
+    std::vector<int> diff;
+    std::ranges::set_difference(std::views::iota(min, max + 1), boarding_passes, back_inserter(diff));
+    fmt::print("{}\n", diff.front());
 
     return 0;
 }
