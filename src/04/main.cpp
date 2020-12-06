@@ -80,8 +80,7 @@ int main(int argc, char** argv)
     {
         auto byr = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"byr:(\\d{4})\\s"};
-            if (auto result = ctre::search<pattern>(view))
+            if (auto result = ctre::search<"byr:(\\d{4})\\s">(view))
             {
                 int year = std::stoi(result.get<1>().to_string());
                 return year >= 1920 && year <= 2002;
@@ -92,8 +91,7 @@ int main(int argc, char** argv)
 
         auto iyr = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"iyr:(\\d{4})\\s"};
-            if (auto result = ctre::search<pattern>(view))
+            if (auto result = ctre::search<"iyr:(\\d{4})\\s">(view))
             {
                 int year = std::stoi(result.get<1>().to_string());
                 return year >= 2010 && year <= 2020;
@@ -104,8 +102,7 @@ int main(int argc, char** argv)
 
         auto eyr = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"eyr:(\\d{4})\\s"};
-            if (auto result = ctre::search<pattern>(view))
+            if (auto result = ctre::search<"eyr:(\\d{4})\\s">(view))
             {
                 int year = std::stoi(result.get<1>().to_string());
                 return year >= 2020 && year <= 2030;
@@ -116,8 +113,7 @@ int main(int argc, char** argv)
 
         auto hgt = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"hgt:(\\d{2,3})(cm|in)\\s"};
-            if (auto result = ctre::search<pattern>(view))
+            if (auto result = ctre::search<"hgt:(\\d{2,3})(cm|in)\\s">(view))
             {
                 int height = std::stoi(result.get<1>().to_string());
                 auto metric = result.get<2>().to_view();
@@ -136,20 +132,17 @@ int main(int argc, char** argv)
 
         auto hcl = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"hcl:#(\\d|[a-f]){6}\\s"};
-            return ctre::search<pattern>(view);
+            return ctre::search<"hcl:#(\\d|[a-f]){6}\\s">(view);
         };
 
         auto ecl = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"ecl:(amb|blu|brn|gry|grn|hzl|oth)\\s"};
-            return ctre::search<pattern>(view);
+            return ctre::search<"ecl:(amb|blu|brn|gry|grn|hzl|oth)\\s">(view);
         };
 
         auto pid = [](std::string_view view)
         {
-            static constexpr auto pattern = ctll::fixed_string{"pid:(\\d{9})\\s"};
-            return ctre::search<pattern>(view);
+            return ctre::search<"pid:(\\d{9})\\s">(view);
         };
 
         int valid_passports = 0;
