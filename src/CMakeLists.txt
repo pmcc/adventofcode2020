@@ -28,3 +28,8 @@ add_day(FOLDER 05
 	LIBRARIES
 )
 
+add_day(FOLDER 06
+	SOURCES main.cpp
+	INCLUDES
+	LIBRARIES ctre
+)
